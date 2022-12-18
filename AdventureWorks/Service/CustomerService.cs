@@ -8,10 +8,11 @@ namespace AdventureWorks.Service;
 public interface ICustomerService
 {
     int addCustomer(CustomerSignup customer);
-    CustomerRequestUpdate findCustomer(int CustomerId);
+    CustomerRequest findCustomer(int CustomerId);
     CustomerRequestUpdate loginCustomer(CustomerLogin customerLogin);
-    int updateCustomer(CustomerRequestUpdate Customer);
+    int updateCustomer(CustomerRequestUpdate Customer, int customerId);
     int deleteCustomer(int CustomerId);
+    Address? findCustomerAddress(int customerId);
 }
 
 public class CustomerService:ICustomerService
@@ -32,7 +33,7 @@ public class CustomerService:ICustomerService
         return result;
     }
 
-    public CustomerRequestUpdate findCustomer(int CustomerId)
+    public CustomerRequest findCustomer(int CustomerId)
     {
         return _customerRepository.find(CustomerId);
     }
@@ -43,14 +44,18 @@ public class CustomerService:ICustomerService
         return _customerRepository.login(customerLogin);
     }
 
-    public int updateCustomer(CustomerRequestUpdate Customer)
+    public int updateCustomer(CustomerRequestUpdate Customer, int customerId)
     {
-        var customermap = _mapper.Map<CustomerRequestUpdate,Customer>(Customer);
-        return _customerRepository.Update(customermap);
+        return _customerRepository.Update(Customer);
     }
 
     public int deleteCustomer(int CustomerId)
     {
         return _customerRepository.Delete(CustomerId);
+    }
+
+    public Address? findCustomerAddress(int customerId)
+    {
+       return _customerRepository.findAddress(customerId);
     }
 }

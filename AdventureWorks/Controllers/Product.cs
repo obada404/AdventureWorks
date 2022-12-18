@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using AdventureWorks.DTO;
+using AdventureWorks.Models;
 using AdventureWorks.Validation;
 
 namespace AdventureWorks.Controllers;
@@ -57,7 +58,24 @@ public class Product : Controller
             return new JsonResult(errors);
         }
         return   new JsonResult( _prodectService.updateProduct(productRequest) ) {StatusCode = (int) HttpStatusCode.OK};
-
+        
     }
-
+    [HttpGet]
+    [Route("/products")]
+    public List<Models.Product> GetAll()
+    {
+        return _prodectService.GetAll();
+    }
+    [HttpGet]
+    [Route("/ProductCategory")]
+    public VGetAllCategory? GetProductCategory(int ProductId)
+    {
+        return _prodectService.GetProductCategory(ProductId);
+    }
+    [HttpGet]
+    [Route("/ProductModel")]
+    public VProductAndDescription? GetProductDescription(int ProductId)
+    {
+        return _prodectService.GetProductDescription(ProductId);
+    }
 }

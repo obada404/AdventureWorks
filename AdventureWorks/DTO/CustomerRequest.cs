@@ -2,6 +2,10 @@
 
 public class CustomerRequest
 {
+    public int CustomerId { get; set; }
+    /// <summary>
+    /// E-mail address for the person.
+    /// </summary>
     public bool NameStyle { get; set; }
 
     /// <summary>

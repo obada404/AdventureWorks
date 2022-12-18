@@ -1,14 +1,17 @@
+using System.Configuration;
 using System.Reflection;
 using System.Text;
 using AdventureWorks.Interface;
+using AdventureWorks.Models;
 using AdventureWorks.Repository;
 using AdventureWorks.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddDbContext<AdventureWorksLt2016Context>(options => options.UseSqlServer("Server =.\\SQLEXPRESS;Database=AdventureWorksLT2016;Trusted_Connection=true; TrustServerCertificate=True;"));
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -17,7 +20,8 @@ builder.Services.AddScoped<IproductRepository,EfProductRepository >();
 builder.Services.AddScoped<IprudectService,productService >();
 builder.Services.AddScoped<ICustomerRepository,EFCustomerRepository >();
 builder.Services.AddScoped<ICustomerService,CustomerService >();
-
+builder.Services.AddScoped<ISalesOrderRepository,SalesOrderRepository >();
+builder.Services.AddScoped<ISalesOrderService,SalesOrderService >();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -40,7 +44,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

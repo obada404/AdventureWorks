@@ -27,5 +27,18 @@ public class MappingProfile: Profile
         
         CreateMap<Customer, CustomerSignup>(); // One Way
         CreateMap<Customer, CustomerSignup>().ReverseMap(); // Reverse
+        
+        
+        CreateMap<SalesOrderHeader, SalesOrderRequest>(); // One Way
+        CreateMap<SalesOrderHeader, SalesOrderRequest>().ReverseMap(); // Reverse
+        
+            
+        CreateMap<SalesOrderDetail, OrderDetailRequest>(); // One Way
+        CreateMap<SalesOrderDetail, OrderDetailRequest>().ReverseMap(); // Reverse
+        
+        CreateMap<SalesOrderDetail, OrderDetailRequestmin>(); // One Way
+        CreateMap<SalesOrderDetail, OrderDetailRequestmin>().ReverseMap(); // Reverse
+
+     
     }
 }

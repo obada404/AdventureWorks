@@ -4,6 +4,7 @@ using System.Net.Security;
 using System.Security.Claims;
 using System.Text;
 using AdventureWorks.DTO;
+using AdventureWorks.Models;
 using AdventureWorks.Service;
 using AdventureWorks.Validation;
 using AutoMapper;
@@ -53,7 +54,7 @@ public class Customer : Controller
 
         if (customer != null)
         {
-            var jwt = _jwtManager.GenerateJwt(customer.CustomerId+"", customer.FirstName, customer.EmailAddress);
+            var jwt = _jwtManager.GenerateJwt(customer.CustomerId+"", customer.FirstName, customer.EmailAddress,"Customer");
             return Ok(jwt);
         }
 
@@ -61,7 +62,7 @@ public class Customer : Controller
     }
     [HttpGet]
     [Route("/Customer/{CustomerId}")]
-    public CustomerRequestUpdate findCustomer(int CustomerId)
+    public CustomerRequest findCustomer(int CustomerId)
     {
         return _customerService.findCustomer(CustomerId);
     }
@@ -73,8 +74,9 @@ public class Customer : Controller
         return _customerService.deleteCustomer(CustomerId);
     }
 
-    
+    //refactor CustomerRequestUpdate to CustomerRequest no need id with update we can get it from jwt
     [HttpPatch]
+    //[Authorize(Roles ="Customer")]
     [Route("/Customer")]
     public ActionResult UpdateCustomer([FromBody] CustomerRequestUpdate customerRequestUpdate )
     {
@@ -82,25 +84,33 @@ public class Customer : Controller
         if (principal == null)
         {
             return Unauthorized();
-        } 
-        var userId = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
-        var user = _customerService.findCustomer(int.Parse(userId));
-        if (user == null)
+        }
+
+        var userId = principal.FindFirst(JwtRegisteredClaimNames.Sid);
+        var role = principal.FindFirst(ClaimTypes.Role).Value;
+        var user = _customerService.findCustomer(int.Parse(userId.Value));
+        if (user == null ||role != "Customer")
         {
             return Forbid();
         }
         var validatorRequestUpdate = new CustomerValidatorRequestUpdate();
-        var resultval =  validatorRequestUpdate.Validate(user);
+        var resultval =  validatorRequestUpdate.Validate(customerRequestUpdate);
         if ( !resultval.IsValid)
         {
             var errors = resultval.Errors.Select(x => new { errors = x.ErrorMessage });
             return new JsonResult(errors);
         }
-        return   new JsonResult( _customerService.updateCustomer(user) ) {StatusCode = (int) HttpStatusCode.OK};
+        return   new JsonResult( _customerService.updateCustomer(customerRequestUpdate,user.CustomerId) ) {StatusCode = (int) HttpStatusCode.OK};
 
     }
     // [HttpPost]
     // [Route("/Customer/createOrder")]
     // public ActionResult createOrder([FromBody] sales)
     //
+
+    [HttpGet("/customerAddress")]
+    public Address? GetAddress(int CustomerId)
+    {
+        return _customerService.findCustomerAddress(CustomerId);
+    }
 }

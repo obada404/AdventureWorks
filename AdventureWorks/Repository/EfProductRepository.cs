@@ -3,6 +3,7 @@ using AdventureWorks.DTO;
 using AdventureWorks.Interface;
 using AdventureWorks.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdventureWorks.Repository;
@@ -52,24 +53,38 @@ public class EfProductRepository:IproductRepository
         
     
     }
-    
 
-    public int Update(Product product)
+
+    public int Update(productRequestUpdate productRequest)
     {
-        try
+        var product = _context.Products.Find(productRequest.ProductId);
+        if (product != null)
         {
-            var result  =_context.Products.Update(product);
-            result.Entity.ModifiedDate = DateTime.Now;
+            var ee= _context.Entry(product);
+            ee.CurrentValues.SetValues(productRequest);
             _context.SaveChanges();
             return 1;
         }
-        catch (Exception e )
-        {
-            throw e;
-        }
-       
+    
+        return 0; 
         
     }
 
+    public List<Product> GetAll()
+    {
+       return _context.Products.Take(10).ToList();
+    }
 
+    public VGetAllCategory? getCategory(int productId)
+    {
+        var product = _context.Products.Find(productId);
+        if(product == null)
+            return null;
+        return  _context.VGetAllCategories.FirstOrDefault(x => x.ProductCategoryId == product.ProductCategoryId);
+    }
+
+    public VProductAndDescription? ProductDescription(int productId)
+    {
+       return _context.VProductAndDescriptions.FirstOrDefault(x => x.ProductId == productId);
+    }
 }

@@ -28,10 +28,13 @@ public class EFCustomerRepository:ICustomerRepository
         return customer.CustomerId;
     }
 
-    public CustomerRequestUpdate find(int CustomerId)
+    public CustomerRequest find(int CustomerId)
     {
         var tmp = _context.Customers.Find(CustomerId);
-        return _mapper.Map<Customer, CustomerRequestUpdate>(tmp);
+        var tmpMap =_mapper.Map<Customer, CustomerRequest>(tmp);
+        _context.ChangeTracker.Clear();
+        return tmpMap;
+
     }
 
     public Customer find(Customer Customer)
@@ -54,11 +57,19 @@ public class EFCustomerRepository:ICustomerRepository
         }
     }
 
-    public int Update(Customer Customer)
+    public int Update(CustomerRequestUpdate Customer)
     {
-        var result  =_context.Customers.Update(Customer);
-        _context.SaveChanges();
-        return 1; 
+
+        var customeer = _context.Customers.Find(Customer.CustomerId);
+        if (customeer != null)
+        {
+           var ee= _context.Entry(customeer);
+             ee.CurrentValues.SetValues(Customer);
+           _context.SaveChanges();
+           return 1;
+        }
+    
+        return 0; 
         
     }
 
@@ -76,6 +87,13 @@ public class EFCustomerRepository:ICustomerRepository
          return null;
      }
          
+    }
+
+    public Address? findAddress(int customerId)
+    {
+        //we can do join if cusstomer can have multiple addressees
+        var address = _context.CustomerAddresses.FirstOrDefault(x => x.CustomerId == customerId);
+      return _context.Addresses.FirstOrDefault(x => x.AddressId == address.AddressId);
     }
 }
 

@@ -3,6 +3,7 @@ using AdventureWorks.Models;
 using AdventureWorks.DTO;
 using AdventureWorks.Interface;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 
 
 public interface IprudectService
@@ -11,6 +12,9 @@ public interface IprudectService
     productRequest findProduct(int productId);
     int updateProduct(productRequestUpdate product);
     int deleteProduct(int productId);
+    List<Product> GetAll();
+    VGetAllCategory? GetProductCategory(int productId);
+    VProductAndDescription? GetProductDescription(int productId);
 }
 
 public class productService :IprudectService
@@ -38,9 +42,8 @@ public class productService :IprudectService
     }
 
     public int updateProduct(productRequestUpdate product)
-    {
-        var productmap = _mapper.Map<productRequestUpdate,Product>(product);
-        return _productRepository.Update(productmap);
+    { 
+        return _productRepository.Update(product);
     }
 
     public int deleteProduct(int productId)
@@ -48,5 +51,18 @@ public class productService :IprudectService
         return _productRepository.Delete(productId) ;
     }
 
+    public List<Product> GetAll()
+    {
+       return _productRepository.GetAll();
+    }
 
+    public VGetAllCategory? GetProductCategory(int productId)
+    {
+       return _productRepository.getCategory(productId);
+    }
+
+    public VProductAndDescription? GetProductDescription(int productId)
+    {
+        return _productRepository.ProductDescription(productId);
+    }
 }
