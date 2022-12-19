@@ -15,13 +15,13 @@ builder.Services.AddDbContext<AdventureWorksLt2016Context>(options => options.Us
 
 builder.Services.AddControllers();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
-builder.Services.AddScoped<IproductRepository,EfProductRepository >();
+builder.Services.AddScoped<IProductRepository,EfProductRepository >();
 builder.Services.AddScoped<IProductService,ProductService >();
 builder.Services.AddScoped<ICustomerRepository,EFCustomerRepository >();
 builder.Services.AddScoped<ICustomerService,CustomerService >();
 builder.Services.AddScoped<ISalesOrderRepository,SalesOrderRepository >();
 builder.Services.AddScoped<ISalesOrderService,SalesOrderService >();
-builder.Services.AddScoped<IAdminRepository,EFAdminRepository >();
+builder.Services.AddScoped<IAdminRepository,EfAdminRepository >();
 builder.Services.AddScoped<IAdminService,AdminService >();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {

@@ -4,16 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AdventureWorks.Interface;
 
-public interface IproductRepository
+public interface IProductRepository
 {
     public int Add(Product product);
-    public productRequest find(int productId);
-    public Product find(Product product);
+    public productRequest Find(int productId);
     public int Delete(int  productId);
     public int Update(productRequestUpdate productRequest);
-
-    // public List<UserOld> GetUsersGeneric(Func<UserOld,bool> pred);  
     List<Product> GetAll();
-    VGetAllCategory? getCategory(int productId);
+    VGetAllCategory? GetCategory(int productId);
     VProductAndDescription? ProductDescription(int productId);
 }

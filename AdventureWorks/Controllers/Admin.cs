@@ -67,7 +67,7 @@ public class Admin : Controller
     }
     [HttpGet]
     [Route("/Admin/{adminId}")]
-    public AdminRequest FindAdmin(int adminId)
+    public AdminRequest? FindAdmin(int adminId)
     {
         return _adminService.FindAdmin(adminId);
     }

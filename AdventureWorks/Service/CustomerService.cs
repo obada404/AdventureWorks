@@ -32,13 +32,13 @@ public class CustomerService:ICustomerService
 
     public CustomerRequest FindCustomer(int customerId)
     {
-        return _customerRepository.find(customerId);
+        return _customerRepository.Find(customerId);
     }
 
     public CustomerRequestUpdate LoginCustomer(CustomerLogin customerLogin)
     {
         
-        return _customerRepository.login(customerLogin);
+        return _customerRepository.Login(customerLogin);
     }
 
     public int UpdateCustomer(CustomerRequestUpdate customer)
@@ -53,6 +53,6 @@ public class CustomerService:ICustomerService
 
     public Address? FindCustomerAddress(int customerId)
     {
-       return _customerRepository.findAddress(customerId);
+       return _customerRepository.FindAddress(customerId);
     }
 }

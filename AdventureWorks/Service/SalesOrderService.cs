@@ -36,7 +36,7 @@ public class SalesOrderService : ISalesOrderService
 
     public SalesOrderRequest FindOrder(int orderId)
     {
-       return _salesOrderRepository.find(orderId);
+       return _salesOrderRepository.Find(orderId);
     }
 
     public int UpdateOrder(SalesOrderRequestUpdate order)
@@ -58,7 +58,7 @@ public class SalesOrderService : ISalesOrderService
         }
 
        
-        return _salesOrderRepository.purchas(_mapper.Map<SalesOrderRequest, SalesOrderHeader>(request.salesorder),
+        return _salesOrderRepository.Purchase(_mapper.Map<SalesOrderRequest, SalesOrderHeader>(request.salesorder),
             listOfOrder);
     }
 
@@ -69,7 +69,7 @@ public class SalesOrderService : ISalesOrderService
 
     public  dynamic AllProductsCustomer(int customerId)
     {
-         return _salesOrderRepository.getallproductscustomer(customerId);
+         return _salesOrderRepository.GetAllProductsCustomer(customerId);
     }
 
     public int AddProductToOrder(int orderId, Orders orders)
@@ -79,6 +79,6 @@ public class SalesOrderService : ISalesOrderService
         {
             listOfOrder.Add(_mapper.Map<OrderDetailRequestmin,SalesOrderDetail>(orderRequestMin));
         }
-        return _salesOrderRepository.addProductToOrder(orderId, listOfOrder);
+        return _salesOrderRepository.AddProductToOrder(orderId, listOfOrder);
     }
 }

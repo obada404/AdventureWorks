@@ -39,9 +39,9 @@ public class SalesOrderRepository:ISalesOrderRepository
 
     }
 
-    public SalesOrderRequest find(int orderid)
+    public SalesOrderRequest Find(int orderId)
     {
-        var result =_context.SalesOrderHeaders.Find(orderid);
+        var result =_context.SalesOrderHeaders.Find(orderId);
         return _mapper.Map<SalesOrderHeader, SalesOrderRequest>(result);
     }
 
@@ -50,11 +50,11 @@ public class SalesOrderRepository:ISalesOrderRepository
         throw new NotImplementedException();
     }
 
-    public int Delete(int orderid)
+    public int Delete(int orderId)
     {
         try
         {
-            var product = _context.SalesOrderHeaders.Find(orderid);
+            var product = _context.SalesOrderHeaders.Find(orderId);
             var ruslt = _context.SalesOrderHeaders.Remove(product);
             _context.SaveChanges();
             return 1;
@@ -83,7 +83,7 @@ public class SalesOrderRepository:ISalesOrderRepository
 
     }
 
-    public int purchas(SalesOrderHeader salesOrderHeader, List<SalesOrderDetail> salesOrderDetails)
+    public int Purchase(SalesOrderHeader salesOrderHeader, List<SalesOrderDetail> salesOrderDetails)
     {
         var salesOrderHeaderID =Add(salesOrderHeader);
         var salesOrderHeaderDB =_context.SalesOrderHeaders.Find(salesOrderHeaderID);
@@ -104,7 +104,7 @@ public class SalesOrderRepository:ISalesOrderRepository
         return _context.SalesOrderHeaders.Where(s => s.CustomerId == customerId).ToList();
     }
 
-    public  dynamic  getallproductscustomer(int customerId)
+    public  dynamic  GetAllProductsCustomer(int customerId)
     {
         var result  =
           ( from P in _context.Products
@@ -126,7 +126,7 @@ public class SalesOrderRepository:ISalesOrderRepository
 
     }
 
-    public int addProductToOrder(int orderId, List<SalesOrderDetail> purchaseRequest)
+    public int AddProductToOrder(int orderId, List<SalesOrderDetail> purchaseRequest)
     {
         foreach (var VARIABLE in purchaseRequest)
         {

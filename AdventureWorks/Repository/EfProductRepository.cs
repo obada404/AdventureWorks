@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdventureWorks.Repository;
 
-public class EfProductRepository:IproductRepository
+public class EfProductRepository:IProductRepository
 {
     private readonly AdventureWorksLt2016Context _context;
     private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ public class EfProductRepository:IproductRepository
         return product.ProductId;
     }
 
-    public productRequest find(int productId)
+    public productRequest Find(int productId)
     {
          var tmp =_context.Products.Find(productId);
 
@@ -75,7 +75,7 @@ public class EfProductRepository:IproductRepository
        return _context.Products.Take(10).ToList();
     }
 
-    public VGetAllCategory? getCategory(int productId)
+    public VGetAllCategory? GetCategory(int productId)
     {
         var product = _context.Products.Find(productId);
         if(product == null)

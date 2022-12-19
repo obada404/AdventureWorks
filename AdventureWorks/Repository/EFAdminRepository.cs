@@ -7,53 +7,54 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AdventureWorks.Repository;
 
-public class EFAdminRepository:IAdminRepository
+public class EfAdminRepository:IAdminRepository
 {
      private readonly AdventureWorksLt2016Context _context;
     private readonly IMapper _mapper;
 
-    public EFAdminRepository(IMapper mapper) {
+    public EfAdminRepository(IMapper mapper) {
         _mapper = mapper;
     
         _context = new AdventureWorksLt2016Context() ;
     }
-    public int Add(Admin Admin)
+    public int Add(Admin admin)
     {
-        _context.Admins.Add(Admin);
+        _context.Admins.Add(admin);
         var hasher = new PasswordHasher <Admin> ();
-        var hasedPassword = hasher.HashPassword(Admin, Admin.HashedPassword);
-        Admin.HashedPassword = hasedPassword;
+        var hasedPassword = hasher.HashPassword(admin, admin.HashedPassword);
+        admin.HashedPassword = hasedPassword;
         _context.SaveChanges();
-        return Admin.AdminId;
+        return admin.AdminId;
     }
     
 
-    public AdminRequest find(int AdminId)
+    public AdminRequest? Find(int adminId)
     {
-        var tmp = _context.Admins.Find(AdminId);
-        var tmpMap =_mapper.Map<Admin, AdminRequest>(tmp);
-        _context.ChangeTracker.Clear();
-        return tmpMap;
+        var tmp = _context.Admins.Find(adminId);
+        if (tmp != null)
+        {
+            var tmpMap =_mapper.Map<Admin, AdminRequest>(tmp);
+            _context.ChangeTracker.Clear();
+            return tmpMap;
+        }
 
+        return null;
     }
+    
 
-    public Admin find(Admin Admin)
-    {
-        throw new NotImplementedException();
-    }
-
-    public int Delete(int AdminId)
+    public int Delete(int adminId)
     {
         try
         {
-            var Admin = _context.Admins.Find(AdminId);
-            var ruslt = _context.Remove(Admin);
+            var admin = _context.Admins.Find(adminId);
+            _context.Remove(admin);
             _context.SaveChanges();
             return 1;
         }
         catch (Exception e)
         {
-            throw e;
+            return 0;
+            
         }
     }
 
@@ -76,12 +77,12 @@ public class EFAdminRepository:IAdminRepository
         
     }
 
-    public AdminRequestUpdate login(AdminLogin AdminLogin)
+    public AdminRequestUpdate Login(AdminLogin AdminLogin)
     {
         var result =_context.Admins.FirstOrDefault(x => x.AdminId == AdminLogin.AdminId);
         var hasher = new PasswordHasher <Admin> ();
-     var Verify=   hasher.VerifyHashedPassword(result, result.HashedPassword, AdminLogin.HashedPassword);
-     if (Verify == PasswordVerificationResult.Success)
+     var verify=   hasher.VerifyHashedPassword(result, result.HashedPassword, AdminLogin.HashedPassword);
+     if (verify == PasswordVerificationResult.Success)
      {
          return _mapper.Map<Admin, AdminRequestUpdate>(result);
      }else

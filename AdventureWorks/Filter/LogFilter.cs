@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.JsonWebTokens;
 using MyApp;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdventureWorks.Filter;
@@ -26,9 +25,9 @@ public class LogFilter : IActionFilter
         }
         
 
-        var userId = principal.FindFirst(JwtRegisteredClaimNames.Sid);
-        context.HttpContext.Request.Headers["id"] = userId.Value;
-        var role = principal.FindFirst(ClaimTypes.Role)?.Value;
+        var userId = principal?.FindFirst(JwtRegisteredClaimNames.Sid);
+        context.HttpContext.Request.Headers["id"] = userId?.Value;
+        var role = principal?.FindFirst(ClaimTypes.Role)?.Value;
         context.HttpContext.Request.Headers["role"] = role;
         _logger.LogInformation("Action start: {actionName}", context.ActionDescriptor.DisplayName);
     }

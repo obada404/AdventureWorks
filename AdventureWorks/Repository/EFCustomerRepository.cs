@@ -28,7 +28,7 @@ public class EFCustomerRepository:ICustomerRepository
         return customer.CustomerId;
     }
 
-    public CustomerRequest find(int CustomerId)
+    public CustomerRequest Find(int CustomerId)
     {
         var tmp = _context.Customers.Find(CustomerId);
         var tmpMap =_mapper.Map<Customer, CustomerRequest>(tmp);
@@ -37,7 +37,7 @@ public class EFCustomerRepository:ICustomerRepository
 
     }
 
-    public Customer find(Customer Customer)
+    public Customer Find(Customer Customer)
     {
         throw new NotImplementedException();
     }
@@ -73,7 +73,7 @@ public class EFCustomerRepository:ICustomerRepository
         
     }
 
-    public CustomerRequestUpdate login(CustomerLogin customerLogin)
+    public CustomerRequestUpdate Login(CustomerLogin customerLogin)
     {
         var result =_context.Customers.FirstOrDefault(x => x.CustomerId == customerLogin.CustomerId);
         var hasher = new PasswordHasher <Customer> ();
@@ -89,7 +89,7 @@ public class EFCustomerRepository:ICustomerRepository
          
     }
 
-    public Address? findAddress(int customerId)
+    public Address? FindAddress(int customerId)
     {
         //we can do join if cusstomer can have multiple addressees
         var address = _context.CustomerAddresses.FirstOrDefault(x => x.CustomerId == customerId);

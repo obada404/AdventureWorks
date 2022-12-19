@@ -7,13 +7,12 @@ public interface ISalesOrderRepository
 {
 
     public int Add(SalesOrderHeader order);
-    public SalesOrderRequest find(int orderid);
-    public SalesOrderHeader find(SalesOrderHeader order);
-    public int Delete(int  orderid);
+    public SalesOrderRequest Find(int orderId);
+    public int Delete(int  orderId);
     public int Update(SalesOrderRequestUpdate orderRequest);
-    public int purchas(SalesOrderHeader salesOrderHeader, List<SalesOrderDetail> salesOrderDetails);
+    public int Purchase(SalesOrderHeader salesOrderHeader, List<SalesOrderDetail> salesOrderDetails);
 
     List<SalesOrderHeader> GetAllOrders(int customerId);
-    dynamic getallproductscustomer(int customerId);
-    int addProductToOrder(int orderId,  List<SalesOrderDetail> purchaseRequest);
+    dynamic GetAllProductsCustomer(int customerId);
+    int AddProductToOrder(int orderId,  List<SalesOrderDetail> purchaseRequest);
 }

@@ -19,10 +19,10 @@ public interface IProductService
 public class ProductService :IProductService
 {
 
-    private readonly IproductRepository _productRepository;
+    private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
 
-    public ProductService(IproductRepository productRepository,IMapper mapper) {
+    public ProductService(IProductRepository productRepository,IMapper mapper) {
         _mapper = mapper;
         _productRepository = productRepository;
     }
@@ -37,7 +37,7 @@ public class ProductService :IProductService
     
     public productRequest FindProduct(int productId)
     {
-        return _productRepository.find(productId);
+        return _productRepository.Find(productId);
     }
 
     public int UpdateProduct(productRequestUpdate product)
@@ -57,7 +57,7 @@ public class ProductService :IProductService
 
     public VGetAllCategory? GetProductCategory(int productId)
     {
-        return _productRepository.getCategory(productId);
+        return _productRepository.GetCategory(productId);
     }
 
     public VProductAndDescription? GetProductDescription(int productId)

@@ -8,7 +8,7 @@ namespace AdventureWorks.Service;
 public interface IAdminService
 {
     int AddAdmin(AdminSignup adminSignup);
-    AdminRequest FindAdmin(int adminId);
+    AdminRequest? FindAdmin(int adminId);
     AdminRequestUpdate LoginAdmin(AdminLogin adminLogin);
     int UpdateAdmin(AdminRequestUpdate admin, int adminId);
     int DeleteAdmin(int adminId);
@@ -30,14 +30,14 @@ public class AdminService:IAdminService
        return _adminRepository.Add(admin);
     }
 
-    public AdminRequest FindAdmin(int adminId)
+    public AdminRequest? FindAdmin(int adminId)
     {
-        return _adminRepository.find(adminId);
+        return _adminRepository.Find(adminId);
     }
 
     public AdminRequestUpdate LoginAdmin(AdminLogin adminLogin)
     {
-        return _adminRepository.login(adminLogin);
+        return _adminRepository.Login(adminLogin);
     }
 
     public int UpdateAdmin(AdminRequestUpdate admin, int adminId)
