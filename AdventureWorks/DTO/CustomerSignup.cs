@@ -45,7 +45,7 @@ public class CustomerSignup
     public string? EmailAddress { get; set; }
     
     /// <summary>
-    /// Password for the e-mail account.
+    /// HashedPassword for the e-mail account.
     /// </summary>
     public string PasswordHash { get; set; } = null!;
 

@@ -41,7 +41,7 @@ public class Customer : Controller
             return new JsonResult(errors){StatusCode = (int) HttpStatusCode.NotAcceptable};
         }
 
-        var result = _customerService.addCustomer(Customer);
+        var result = _customerService.AddCustomer(Customer);
         return   new JsonResult( result ) {StatusCode = (int) HttpStatusCode.OK};
         
     }
@@ -50,7 +50,7 @@ public class Customer : Controller
     [Route("/Customer")]
     public OkObjectResult loginCustomer([FromBody] CustomerLogin Customer)
     {
-        var customer = _customerService.loginCustomer(Customer);;
+        var customer = _customerService.LoginCustomer(Customer);;
 
         if (customer != null)
         {
@@ -62,16 +62,22 @@ public class Customer : Controller
     }
     [HttpGet]
     [Route("/Customer/{CustomerId}")]
-    public CustomerRequest findCustomer(int CustomerId)
+    public ActionResult findCustomer(int CustomerId)
     {
-        return _customerService.findCustomer(CustomerId);
+        var authResult  = Authorizationfunc();
+        if (authResult != null)
+            return authResult;
+        return new JsonResult(_customerService.FindCustomer(CustomerId));
     }
 
     [HttpDelete]
     [Route("/Customer/{CustomerId}")]
-    public int deleteCustomer(int CustomerId)
+    public ActionResult deleteCustomer(int CustomerId)
     {
-        return _customerService.deleteCustomer(CustomerId);
+        var authResult  = Authorizationfunc();
+        if (authResult != null)
+            return authResult;
+        return new JsonResult(_customerService.DeleteCustomer(CustomerId));
     }
 
     //refactor CustomerRequestUpdate to CustomerRequest no need id with update we can get it from jwt
@@ -88,7 +94,7 @@ public class Customer : Controller
 
         var userId = principal.FindFirst(JwtRegisteredClaimNames.Sid);
         var role = principal.FindFirst(ClaimTypes.Role).Value;
-        var user = _customerService.findCustomer(int.Parse(userId.Value));
+        var user = _customerService.FindCustomer(int.Parse(userId.Value));
         if (user == null ||role != "Customer")
         {
             return Forbid();
@@ -100,17 +106,31 @@ public class Customer : Controller
             var errors = resultval.Errors.Select(x => new { errors = x.ErrorMessage });
             return new JsonResult(errors);
         }
-        return   new JsonResult( _customerService.updateCustomer(customerRequestUpdate,user.CustomerId) ) {StatusCode = (int) HttpStatusCode.OK};
+        return   new JsonResult( _customerService.UpdateCustomer(customerRequestUpdate) ) {StatusCode = (int) HttpStatusCode.OK};
 
     }
-    // [HttpPost]
-    // [Route("/Customer/createOrder")]
-    // public ActionResult createOrder([FromBody] sales)
-    //
 
     [HttpGet("/customerAddress")]
     public Address? GetAddress(int CustomerId)
     {
-        return _customerService.findCustomerAddress(CustomerId);
+        return _customerService.FindCustomerAddress(CustomerId);
+    }
+
+   public ActionResult Authorizationfunc()
+    {
+        var principal = _jwtManager.VerifyJwt(Request.Headers["Authorization"]);
+        if (principal == null)
+        {
+            return Unauthorized();
+        }
+
+        var userId = principal.FindFirst(JwtRegisteredClaimNames.Sid);
+        var role = principal.FindFirst(ClaimTypes.Role).Value;
+        if (role != "Admin")
+        {
+            return Forbid();
+        }
+
+        return null;
     }
 }

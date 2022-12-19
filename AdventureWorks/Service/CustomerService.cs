@@ -2,17 +2,16 @@
 using AdventureWorks.DTO;
 using AdventureWorks.Interface;
 using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 
 namespace AdventureWorks.Service;
 public interface ICustomerService
 {
-    int addCustomer(CustomerSignup customer);
-    CustomerRequest findCustomer(int CustomerId);
-    CustomerRequestUpdate loginCustomer(CustomerLogin customerLogin);
-    int updateCustomer(CustomerRequestUpdate Customer, int customerId);
-    int deleteCustomer(int CustomerId);
-    Address? findCustomerAddress(int customerId);
+    int AddCustomer(CustomerSignup customer);
+    CustomerRequest FindCustomer(int customerId);
+    CustomerRequestUpdate LoginCustomer(CustomerLogin customerLogin);
+    int UpdateCustomer(CustomerRequestUpdate customer);
+    int DeleteCustomer(int customerId);
+    Address? FindCustomerAddress(int customerId);
 }
 
 public class CustomerService:ICustomerService
@@ -20,41 +19,39 @@ public class CustomerService:ICustomerService
     
     private readonly ICustomerRepository _customerRepository;
     private readonly IMapper _mapper;
-  //  appUser.PasswordHash = hasher.HashPassword(appUser, "Default8!");
-    public CustomerService(ICustomerRepository customerRepository,IMapper mapper  ,Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Identity.PasswordHasherOptions>? optionsAccessor = default     ) {
+    public CustomerService(ICustomerRepository customerRepository,IMapper mapper ) {
         _mapper = mapper;
         _customerRepository = customerRepository;
     }
-    public int addCustomer(CustomerSignup customer)
+    public int AddCustomer(CustomerSignup customer)
     {
-
-        var customermap = _mapper.Map<CustomerSignup,Customer>(customer);
-        var result =  _customerRepository.Add(customermap);
+        var customerMap = _mapper.Map<CustomerSignup,Customer>(customer);
+        var result =  _customerRepository.Add(customerMap);
         return result;
     }
 
-    public CustomerRequest findCustomer(int CustomerId)
+    public CustomerRequest FindCustomer(int customerId)
     {
-        return _customerRepository.find(CustomerId);
+        return _customerRepository.find(customerId);
     }
 
-    public CustomerRequestUpdate loginCustomer(CustomerLogin customerLogin)
+    public CustomerRequestUpdate LoginCustomer(CustomerLogin customerLogin)
     {
         
         return _customerRepository.login(customerLogin);
     }
 
-    public int updateCustomer(CustomerRequestUpdate Customer, int customerId)
+    public int UpdateCustomer(CustomerRequestUpdate customer)
     {
-        return _customerRepository.Update(Customer);
+        return _customerRepository.Update(customer);
     }
 
-    public int deleteCustomer(int CustomerId)
+    public int DeleteCustomer(int customerId)
     {
-        return _customerRepository.Delete(CustomerId);
+        return _customerRepository.Delete(customerId);
     }
 
-    public Address? findCustomerAddress(int customerId)
+    public Address? FindCustomerAddress(int customerId)
     {
        return _customerRepository.findAddress(customerId);
     }

@@ -1,64 +1,63 @@
-using AdventureWorks;
-using AdventureWorks.Models;
 using AdventureWorks.DTO;
 using AdventureWorks.Interface;
+using AdventureWorks.Models;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 
+namespace AdventureWorks.Service;
 
-public interface IprudectService
+public interface IProductService
 {
-    int addPrudect(productRequest product);
-    productRequest findProduct(int productId);
-    int updateProduct(productRequestUpdate product);
-    int deleteProduct(int productId);
+    int AddProduct(productRequest product);
+    productRequest FindProduct(int productId);
+    int UpdateProduct(productRequestUpdate product);
+    int DeleteProduct(int productId);
     List<Product> GetAll();
     VGetAllCategory? GetProductCategory(int productId);
     VProductAndDescription? GetProductDescription(int productId);
 }
 
-public class productService :IprudectService
+public class ProductService :IProductService
 {
 
     private readonly IproductRepository _productRepository;
     private readonly IMapper _mapper;
 
-    public productService(IproductRepository productRepository,IMapper mapper) {
+    public ProductService(IproductRepository productRepository,IMapper mapper) {
         _mapper = mapper;
         _productRepository = productRepository;
     }
 
-    public  int addPrudect(productRequest product)
+    public  int AddProduct(productRequest product)
     {
         
-        var productmap = _mapper.Map<productRequest,Product>(product);
-        return  _productRepository.Add(productmap);
+        var map = _mapper.Map<productRequest,Product>(product);
+        return  _productRepository.Add(map);
 
     }
     
-    public productRequest findProduct(int productId)
+    public productRequest FindProduct(int productId)
     {
         return _productRepository.find(productId);
     }
 
-    public int updateProduct(productRequestUpdate product)
+    public int UpdateProduct(productRequestUpdate product)
     { 
         return _productRepository.Update(product);
     }
 
-    public int deleteProduct(int productId)
+    public int DeleteProduct(int productId)
     {
         return _productRepository.Delete(productId) ;
     }
 
     public List<Product> GetAll()
     {
-       return _productRepository.GetAll();
+        return _productRepository.GetAll();
     }
 
     public VGetAllCategory? GetProductCategory(int productId)
     {
-       return _productRepository.getCategory(productId);
+        return _productRepository.getCategory(productId);
     }
 
     public VProductAndDescription? GetProductDescription(int productId)

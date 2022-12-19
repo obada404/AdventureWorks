@@ -12,16 +12,17 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AdventureWorksLt2016Context>(options => options.UseSqlServer("Server =.\\SQLEXPRESS;Database=AdventureWorksLT2016;Trusted_Connection=true; TrustServerCertificate=True;"));
-// Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
 builder.Services.AddScoped<IproductRepository,EfProductRepository >();
-builder.Services.AddScoped<IprudectService,productService >();
+builder.Services.AddScoped<IProductService,ProductService >();
 builder.Services.AddScoped<ICustomerRepository,EFCustomerRepository >();
 builder.Services.AddScoped<ICustomerService,CustomerService >();
 builder.Services.AddScoped<ISalesOrderRepository,SalesOrderRepository >();
 builder.Services.AddScoped<ISalesOrderService,SalesOrderService >();
+builder.Services.AddScoped<IAdminRepository,EFAdminRepository >();
+builder.Services.AddScoped<IAdminService,AdminService >();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {
         options.TokenValidationParameters = new TokenValidationParameters

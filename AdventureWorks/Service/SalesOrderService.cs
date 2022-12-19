@@ -1,5 +1,4 @@
-﻿using AdventureWorks.Controllers;
-using AdventureWorks.DTO;
+﻿using AdventureWorks.DTO;
 using AdventureWorks.Interface;
 using AdventureWorks.Models;
 using AutoMapper;
@@ -14,8 +13,8 @@ public interface ISalesOrderService
     int DeleteOrder(int orderId);
     int Purchase(PurchaseRequestEnv<SalesOrderRequest, PurchaseRequest> request);
     List<SalesOrderHeader> AllOrders(int customerId);
-    dynamic AllProductscustomer(int customerId);
-    int addProductToOrder(int orderId, Orders orders);
+    dynamic AllProductsCustomer(int customerId);
+    int AddProductToOrder(int orderId, Orders orders);
 }
 
 public class SalesOrderService : ISalesOrderService
@@ -52,14 +51,15 @@ public class SalesOrderService : ISalesOrderService
 
     public int Purchase(PurchaseRequestEnv<SalesOrderRequest, PurchaseRequest> request)
     {
-        var listofproducts = new List<SalesOrderDetail>();
-        foreach (var VARIABLE in request.PurchaseRequest.product)
+        var listOfOrder = new List<SalesOrderDetail>();
+        foreach (var orderRequest in request.PurchaseRequest.product)
         {
-            listofproducts.Add(_mapper.Map<OrderDetailRequest,SalesOrderDetail>(VARIABLE));
+            listOfOrder.Add(_mapper.Map<OrderDetailRequest,SalesOrderDetail>(orderRequest));
         }
 
-       return _salesOrderRepository.purchas(_mapper.Map<SalesOrderRequest, SalesOrderHeader>(request.salesorder),
-            listofproducts);
+       
+        return _salesOrderRepository.purchas(_mapper.Map<SalesOrderRequest, SalesOrderHeader>(request.salesorder),
+            listOfOrder);
     }
 
     public List<SalesOrderHeader> AllOrders(int customerId)
@@ -67,18 +67,18 @@ public class SalesOrderService : ISalesOrderService
        return _salesOrderRepository.GetAllOrders(customerId);
     }
 
-    public  dynamic AllProductscustomer(int customerId)
+    public  dynamic AllProductsCustomer(int customerId)
     {
          return _salesOrderRepository.getallproductscustomer(customerId);
     }
 
-    public int addProductToOrder(int orderId, Orders orders)
+    public int AddProductToOrder(int orderId, Orders orders)
     {
-        var listofproducts = new List<SalesOrderDetail>();
-        foreach (var VARIABLE in orders.product)
+        var listOfOrder = new List<SalesOrderDetail>();
+        foreach (var orderRequestMin in orders.product)
         {
-            listofproducts.Add(_mapper.Map<OrderDetailRequestmin,SalesOrderDetail>(VARIABLE));
+            listOfOrder.Add(_mapper.Map<OrderDetailRequestmin,SalesOrderDetail>(orderRequestMin));
         }
-        return _salesOrderRepository.addProductToOrder(orderId, listofproducts);
+        return _salesOrderRepository.addProductToOrder(orderId, listOfOrder);
     }
 }

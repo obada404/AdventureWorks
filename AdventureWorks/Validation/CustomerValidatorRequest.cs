@@ -29,12 +29,9 @@ public class CustomerValidatorRequestUpdate : AbstractValidator<CustomerRequestU
     public CustomerValidatorRequestUpdate()
     {
         RuleFor(x => x.CustomerId).NotNull().NotEmpty();
-        RuleFor(x => x.Title).MaximumLength(8);
         RuleFor(x => x.FirstName).MaximumLength(50);
         RuleFor(x => x.LastName).MaximumLength(50);
         RuleFor(x => x.MiddleName).MaximumLength(50);
-        RuleFor(x => x.Suffix).MaximumLength(10);
-        RuleFor(x => x.CompanyName).MaximumLength(128);
         RuleFor(x => x.EmailAddress).EmailAddress().MaximumLength(50);
 
 

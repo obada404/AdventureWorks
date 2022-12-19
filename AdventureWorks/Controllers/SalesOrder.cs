@@ -1,10 +1,12 @@
 ﻿using System.Net;
+using System.Security.Claims;
 using AdventureWorks.Service;
 using AdventureWorks.DTO;
 using AdventureWorks.Models;
 using AdventureWorks.Validation;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 using MyApp;
 
 namespace AdventureWorks.Controllers;
@@ -102,14 +104,33 @@ public class SalesOrder : Controller
     [Route("/allProductsforcustomer/{customerId}")]
     public dynamic GitallProductsforcustomer(int customerId)
     {
-          return _salesOrderService.AllProductscustomer(customerId);
+        var authResult  = Authorizationfunc();
+        if (authResult != null)
+            return authResult;
+          return _salesOrderService.AllProductsCustomer(customerId);
     }
     [HttpGet]
     [Route("/addProductToOrder/{orderId}")]
     public int addProductToOrder([FromBody] Orders purchaseRequest, int orderId)
     {
-        return _salesOrderService.addProductToOrder(orderId,purchaseRequest);
+        return _salesOrderService.AddProductToOrder(orderId,purchaseRequest);
     }
-    
+    public ActionResult Authorizationfunc()
+    {
+        var principal = _jwtManager.VerifyJwt(Request.Headers["Authorization"]);
+        if (principal == null)
+        {
+            return Unauthorized();
+        }
+
+        var userId = principal.FindFirst(JwtRegisteredClaimNames.Sid);
+        var role = principal.FindFirst(ClaimTypes.Role).Value;
+        if (role != "Admin")
+        {
+            return Forbid();
+        }
+
+        return null;
+    }
 
 }
