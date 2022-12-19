@@ -1,33 +1,28 @@
 ﻿using System.Net;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using AdventureWorks.DTO;
+using AdventureWorks.Filter;
 using AdventureWorks.Models;
 using AdventureWorks.Service;
 using AdventureWorks.Validation;
-using Microsoft.IdentityModel.JsonWebTokens;
 using MyApp;
 
 namespace AdventureWorks.Controllers;
 
 public class Product : Controller
 {
-    private  JwtManager _jwtManager;
 
-    private readonly IProductService _prodectService;
-    public Product(IProductService productService,IConfiguration config  )
+    private readonly IProductService _productService;
+    public Product(IProductService productService)
     {
-        _prodectService = productService;
-        _jwtManager = new JwtManager(config["Jwt:Key"]);
+        _productService = productService;
 
     }
     [HttpPost]
+    [TypeFilter(typeof(LogFilter))]
     [Route("/product")]
     public ActionResult PostProduct( [FromBody] productRequest product)
     {
-        var authResult  = Authorizationfunc();
-        if (authResult != null)
-            return authResult;
         ProductValidatorRequest validatorRequestUpdate = new ProductValidatorRequest();
       var resultval =  validatorRequestUpdate.Validate(product);
       if ( !resultval.IsValid)
@@ -36,7 +31,7 @@ public class Product : Controller
           return new JsonResult(errors){StatusCode = (int) HttpStatusCode.NotAcceptable};
       }
 
-      var result = _prodectService.AddProduct(product);
+      var result = _productService.AddProduct(product);
         return   new JsonResult( result ) {StatusCode = (int) HttpStatusCode.OK};
     }
 
@@ -44,27 +39,24 @@ public class Product : Controller
     [Route("/product/{productId}")]
     public productRequest findProduct(int productId)
     {
-        return _prodectService.FindProduct(productId);
+        return _productService.FindProduct(productId);
     }
 
     [HttpDelete]
+    [TypeFilter(typeof(LogFilter))]
     [Route("/product/{productId}")]
     public ActionResult deleteProduct(int productId)
     {
-        var authResult  = Authorizationfunc();
-        if (authResult != null)
-            return authResult;
-        return new JsonResult( _prodectService.DeleteProduct(productId));
+        return new JsonResult( _productService.DeleteProduct(productId));
     }
 
     
     [HttpPatch]
+    [TypeFilter(typeof(LogFilter))]
     [Route("/product")]
     public ActionResult UpdateProduct( [FromBody] productRequestUpdate productRequest)
     {
-        var authResult  = Authorizationfunc();
-        if (authResult != null)
-            return authResult;
+        
         ProductValidatorRequestUpdate validatorRequestUpdate = new ProductValidatorRequestUpdate();
         var resultval =  validatorRequestUpdate.Validate(productRequest);
         if ( !resultval.IsValid)
@@ -72,45 +64,28 @@ public class Product : Controller
             var errors = resultval.Errors.Select(x => new { errors = x.ErrorMessage });
             return new JsonResult(errors);
         }
-        return   new JsonResult( _prodectService.UpdateProduct(productRequest) ) {StatusCode = (int) HttpStatusCode.OK};
+        return   new JsonResult( _productService.UpdateProduct(productRequest) ) {StatusCode = (int) HttpStatusCode.OK};
         
     }
     [HttpGet]
+    [TypeFilter(typeof(LogFilter))]
     [Route("/products")]
     public ActionResult GetAll()
     {
-        var authResult  = Authorizationfunc();
-        if (authResult != null)
-            return authResult;
-        return new JsonResult(_prodectService.GetAll());
+        
+        return new JsonResult(_productService.GetAll());
     }
     [HttpGet]
     [Route("/ProductCategory")]
     public VGetAllCategory? GetProductCategory(int ProductId)
     {
-        return _prodectService.GetProductCategory(ProductId);
+        return _productService.GetProductCategory(ProductId);
     }
     [HttpGet]
     [Route("/ProductModel")]
     public VProductAndDescription? GetProductDescription(int ProductId)
     {
-        return _prodectService.GetProductDescription(ProductId);
+        return _productService.GetProductDescription(ProductId);
     }
-    public ActionResult Authorizationfunc()
-    {
-        var principal = _jwtManager.VerifyJwt(Request.Headers["Authorization"]);
-        if (principal == null)
-        {
-            return Unauthorized();
-        }
-
-        var userId = principal.FindFirst(JwtRegisteredClaimNames.Sid);
-        var role = principal.FindFirst(ClaimTypes.Role).Value;
-        if (role != "Admin")
-        {
-            return Forbid();
-        }
-
-        return null;
-    }
+  
 }

@@ -1,11 +1,10 @@
 ﻿using System.Net;
-using System.Security.Claims;
 using AdventureWorks.DTO;
+using AdventureWorks.Filter;
 using AdventureWorks.Service;
 using AdventureWorks.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.JsonWebTokens;
 using MyApp;
 
 namespace AdventureWorks.Controllers;
@@ -58,18 +57,12 @@ public class Admin : Controller
     
     [AllowAnonymous]
     [HttpGet]
+    [TypeFilter(typeof(LogFilter))]
     [Route("/Admin/currentAdmin")]
     public ActionResult CurrentAdmin()
     {
-        var principal = _jwtManager.VerifyJwt(Request.Headers["Authorization"]!);
-        if (principal == null)
-        {
-            return Unauthorized();
-        }
-
-        var userId = principal.FindFirst(JwtRegisteredClaimNames.Sid);
-        var role = principal.FindFirst(ClaimTypes.Role)?.Value;
-        var user = _adminService.FindAdmin(int.Parse(userId?.Value));
+        
+        var user = _adminService.FindAdmin(int.Parse(Request.Headers["id"]!));
         return new JsonResult(user);
     }
     [HttpGet]
@@ -87,19 +80,13 @@ public class Admin : Controller
     }
 
     [HttpPatch]
+    [TypeFilter(typeof(LogFilter))]
     [Route("/Admin")]
     public ActionResult UpdateAdmin([FromBody] AdminRequestUpdate adminRequestUpdate )
     {
-        var principal = _jwtManager.VerifyJwt(Request.Headers["Authorization"]!);
-        if (principal == null)
-        {
-            return Unauthorized();
-        }
-
-        var userId = principal.FindFirst(JwtRegisteredClaimNames.Sid);
-        var role = principal.FindFirst(ClaimTypes.Role)?.Value;
-        var user = _adminService.FindAdmin(int.Parse(userId?.Value));
-        if (user == null ||role != "Admin")
+       
+        var user = _adminService.FindAdmin(int.Parse(Request.Headers["id"]!));
+        if (user == null )
         {
             return Forbid();
         }

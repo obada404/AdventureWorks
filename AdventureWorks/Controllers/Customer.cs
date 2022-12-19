@@ -1,100 +1,82 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Net;
-using System.Net.Security;
-using System.Security.Claims;
-using System.Text;
+﻿using System.Net;
 using AdventureWorks.DTO;
+using AdventureWorks.Filter;
 using AdventureWorks.Models;
 using AdventureWorks.Service;
 using AdventureWorks.Validation;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using MyApp;
 
 namespace AdventureWorks.Controllers;
 
 public class Customer : Controller
 {
-    private readonly IConfiguration _config;
     private readonly ICustomerService _customerService;
-    private readonly IMapper _mapper;
-    private  JwtManager _jwtManager;
-    public Customer(ICustomerService customerService ,IConfiguration config ,IMapper mapper)
+    private readonly JwtManager _jwtManager;
+    public Customer(ICustomerService customerService ,IConfiguration config )
     {
         _customerService = customerService;
-        _config = config;
-        _mapper = mapper;
-        _jwtManager = new JwtManager(_config["Jwt:Key"]);
+        _jwtManager = new JwtManager(config["Jwt:Key"]);
     }
     [AllowAnonymous]
     [HttpPost]
     [Route("/Customer")]
-    public ActionResult PostCustomer( [FromBody] CustomerSignup Customer)
+    public ActionResult PostCustomer( [FromBody] CustomerSignup customer)
     {
-        var _CustomerValidatorSignup = new CustomerValidatorSignup();
-        var resultval =  _CustomerValidatorSignup.Validate(Customer);
-        if ( !resultval.IsValid)
+        var customerValidatorSignup = new CustomerValidatorSignup();
+        var validationResult =  customerValidatorSignup.Validate(customer);
+        if ( !validationResult.IsValid)
         {
-            var errors = resultval.Errors.Select(x => new { errors = x.ErrorMessage });
+            var errors = validationResult.Errors.Select(x => new { errors = x.ErrorMessage });
             return new JsonResult(errors){StatusCode = (int) HttpStatusCode.NotAcceptable};
         }
 
-        var result = _customerService.AddCustomer(Customer);
+        var result = _customerService.AddCustomer(customer);
         return   new JsonResult( result ) {StatusCode = (int) HttpStatusCode.OK};
         
     }
     [AllowAnonymous]
     [HttpGet]
     [Route("/Customer")]
-    public OkObjectResult loginCustomer([FromBody] CustomerLogin Customer)
+    public OkObjectResult LoginCustomer([FromBody] CustomerLogin customerLogin)
     {
-        var customer = _customerService.LoginCustomer(Customer);;
+        var customer = _customerService.LoginCustomer(customerLogin);
 
-        if (customer != null)
+        if (customer != null || customer?.EmailAddress != null)
         {
-            var jwt = _jwtManager.GenerateJwt(customer.CustomerId+"", customer.FirstName, customer.EmailAddress,"Customer");
+            var jwt = _jwtManager.GenerateJwt(customer.CustomerId+"", customer.FirstName, customer.EmailAddress!,"Customer");
             return Ok(jwt);
         }
 
         return null;
     }
     [HttpGet]
-    [Route("/Customer/{CustomerId}")]
-    public ActionResult findCustomer(int CustomerId)
+    [TypeFilter(typeof(LogFilter))]
+
+    [Route("/Customer/{customerId}")]
+    public ActionResult FindCustomer(int customerId)
     {
-        var authResult  = Authorizationfunc();
-        if (authResult != null)
-            return authResult;
-        return new JsonResult(_customerService.FindCustomer(CustomerId));
+        return new JsonResult(_customerService.FindCustomer(customerId));
     }
 
     [HttpDelete]
-    [Route("/Customer/{CustomerId}")]
-    public ActionResult deleteCustomer(int CustomerId)
+    [TypeFilter(typeof(LogFilter))]
+    [Route("/Customer/{customerId}")]
+    public ActionResult DeleteCustomer(int customerId)
     {
-        var authResult  = Authorizationfunc();
-        if (authResult != null)
-            return authResult;
-        return new JsonResult(_customerService.DeleteCustomer(CustomerId));
+       
+        return new JsonResult(_customerService.DeleteCustomer(customerId));
     }
 
-    //refactor CustomerRequestUpdate to CustomerRequest no need id with update we can get it from jwt
     [HttpPatch]
-    //[Authorize(Roles ="Customer")]
+    [TypeFilter(typeof(LogFilter))]
     [Route("/Customer")]
     public ActionResult UpdateCustomer([FromBody] CustomerRequestUpdate customerRequestUpdate )
     {
-        var principal = _jwtManager.VerifyJwt(Request.Headers["Authorization"]);
-        if (principal == null)
-        {
-            return Unauthorized();
-        }
-
-        var userId = principal.FindFirst(JwtRegisteredClaimNames.Sid);
-        var role = principal.FindFirst(ClaimTypes.Role).Value;
-        var user = _customerService.FindCustomer(int.Parse(userId.Value));
+     
+        var role =Request.Headers["role"] ;
+        var user = _customerService.FindCustomer(int.Parse(Request.Headers["id"]!));
         if (user == null ||role != "Customer")
         {
             return Forbid();
@@ -111,26 +93,8 @@ public class Customer : Controller
     }
 
     [HttpGet("/customerAddress")]
-    public Address? GetAddress(int CustomerId)
+    public Address? GetAddress(int customerId)
     {
-        return _customerService.FindCustomerAddress(CustomerId);
-    }
-
-   public ActionResult Authorizationfunc()
-    {
-        var principal = _jwtManager.VerifyJwt(Request.Headers["Authorization"]);
-        if (principal == null)
-        {
-            return Unauthorized();
-        }
-
-        var userId = principal.FindFirst(JwtRegisteredClaimNames.Sid);
-        var role = principal.FindFirst(ClaimTypes.Role).Value;
-        if (role != "Admin")
-        {
-            return Forbid();
-        }
-
-        return null;
+        return _customerService.FindCustomerAddress(customerId);
     }
 }

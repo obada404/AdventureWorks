@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using AdventureWorks.Service;
 using AdventureWorks.DTO;
+using AdventureWorks.Filter;
 using AdventureWorks.Models;
 using AdventureWorks.Validation;
 using AutoMapper;
@@ -70,7 +71,6 @@ public class SalesOrder : Controller
             var errors = resultval.Errors.Select(x => new { errors = x.ErrorMessage });
             return new JsonResult(errors);
         }
-
         return new JsonResult(_salesOrderService.UpdateOrder(salesOrderRequest))
             { StatusCode = (int)HttpStatusCode.OK };
 
@@ -87,8 +87,7 @@ public class SalesOrder : Controller
             var errors = resultval.Errors.Select(x => new { errors = x.ErrorMessage });
             return new JsonResult(errors);
         }
-
-       var order = _salesOrderService.Purchase(Request);
+        var order = _salesOrderService.Purchase(Request);
         
         
         return new JsonResult(order);
@@ -101,36 +100,19 @@ public class SalesOrder : Controller
         return _salesOrderService.AllOrders(customerId);
     }
     [HttpGet]
-    [Route("/allProductsforcustomer/{customerId}")]
-    public dynamic GitallProductsforcustomer(int customerId)
+    [TypeFilter(typeof(LogFilter))]
+    [Route("/AllProductsForCustomer/{customerId}")]
+    public dynamic GitAllProductsForCustomer(int customerId)
     {
-        var authResult  = Authorizationfunc();
-        if (authResult != null)
-            return authResult;
+       
           return _salesOrderService.AllProductsCustomer(customerId);
     }
     [HttpGet]
     [Route("/addProductToOrder/{orderId}")]
-    public int addProductToOrder([FromBody] Orders purchaseRequest, int orderId)
+    public int AddProductToOrder([FromBody] Orders purchaseRequest, int orderId)
     {
         return _salesOrderService.AddProductToOrder(orderId,purchaseRequest);
     }
-    public ActionResult Authorizationfunc()
-    {
-        var principal = _jwtManager.VerifyJwt(Request.Headers["Authorization"]);
-        if (principal == null)
-        {
-            return Unauthorized();
-        }
 
-        var userId = principal.FindFirst(JwtRegisteredClaimNames.Sid);
-        var role = principal.FindFirst(ClaimTypes.Role).Value;
-        if (role != "Admin")
-        {
-            return Forbid();
-        }
-
-        return null;
-    }
 
 }
