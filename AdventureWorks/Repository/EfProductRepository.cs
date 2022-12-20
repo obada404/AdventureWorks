@@ -21,7 +21,7 @@ public class EfProductRepository:IProductRepository
     public  int Add(Product product)
     {
         _context.Products.Add(product);
-         _context.SaveChanges();
+        _context.SaveChanges();
         return product.ProductId;
     }
 
@@ -70,9 +70,9 @@ public class EfProductRepository:IProductRepository
         
     }
 
-    public List<Product> GetAll()
+    public List<Product> GetAll(int number)
     {
-       return _context.Products.Take(10).ToList();
+       return _context.Products.Take(number).ToList();
     }
 
     public VGetAllCategory? GetCategory(int productId)

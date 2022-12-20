@@ -11,7 +11,7 @@ public interface IProductService
     productRequest FindProduct(int productId);
     int UpdateProduct(productRequestUpdate product);
     int DeleteProduct(int productId);
-    List<Product> GetAll();
+    List<Product> GetAll(int number);
     VGetAllCategory? GetProductCategory(int productId);
     VProductAndDescription? GetProductDescription(int productId);
 }
@@ -50,9 +50,9 @@ public class ProductService :IProductService
         return _productRepository.Delete(productId) ;
     }
 
-    public List<Product> GetAll()
+    public List<Product> GetAll(int number)
     {
-        return _productRepository.GetAll();
+        return _productRepository.GetAll(number);
     }
 
     public VGetAllCategory? GetProductCategory(int productId)

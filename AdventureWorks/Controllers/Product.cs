@@ -5,7 +5,6 @@ using AdventureWorks.Filter;
 using AdventureWorks.Models;
 using AdventureWorks.Service;
 using AdventureWorks.Validation;
-using MyApp;
 
 namespace AdventureWorks.Controllers;
 
@@ -37,7 +36,7 @@ public class Product : Controller
 
     [HttpGet]
     [Route("/product/{productId}")]
-    public productRequest findProduct(int productId)
+    public productRequest FindProduct(int productId)
     {
         return _productService.FindProduct(productId);
     }
@@ -45,9 +44,9 @@ public class Product : Controller
     [HttpDelete]
     [TypeFilter(typeof(LogFilter))]
     [Route("/product/{productId}")]
-    public ActionResult deleteProduct(int productId)
+    public ActionResult DeleteProduct(int productId)
     {
-        return new JsonResult( _productService.DeleteProduct(productId));
+        return new JsonResult( _productService.DeleteProduct(productId) == 1?"product deleted " : " no product with this id" );
     }
 
     
@@ -68,24 +67,23 @@ public class Product : Controller
         
     }
     [HttpGet]
-    [TypeFilter(typeof(LogFilter))]
     [Route("/products")]
-    public ActionResult GetAll()
+    public ActionResult GetAll(int number)
     {
         
-        return new JsonResult(_productService.GetAll());
+        return new JsonResult(_productService.GetAll(number));
     }
     [HttpGet]
     [Route("/ProductCategory")]
-    public VGetAllCategory? GetProductCategory(int ProductId)
+    public VGetAllCategory? GetProductCategory(int productId)
     {
-        return _productService.GetProductCategory(ProductId);
+        return _productService.GetProductCategory(productId);
     }
     [HttpGet]
     [Route("/ProductModel")]
-    public VProductAndDescription? GetProductDescription(int ProductId)
+    public VProductAndDescription? GetProductDescription(int productId)
     {
-        return _productService.GetProductDescription(ProductId);
+        return _productService.GetProductDescription(productId);
     }
   
 }

@@ -38,7 +38,7 @@ public class Customer : Controller
     }
     [AllowAnonymous]
     [HttpGet]
-    [Route("/Customer")]
+    [Route("/Customerlogin")]
     public OkObjectResult LoginCustomer([FromBody] CustomerLogin customerLogin)
     {
         var customer = _customerService.LoginCustomer(customerLogin);
@@ -53,7 +53,6 @@ public class Customer : Controller
     }
     [HttpGet]
     [TypeFilter(typeof(LogFilter))]
-
     [Route("/Customer/{customerId}")]
     public ActionResult FindCustomer(int customerId)
     {
@@ -91,9 +90,9 @@ public class Customer : Controller
         return   new JsonResult( _customerService.UpdateCustomer(customerRequestUpdate) ) {StatusCode = (int) HttpStatusCode.OK};
 
     }
-
+    [TypeFilter(typeof(LogFilter))]
     [HttpGet("/customerAddress")]
-    public Address? GetAddress(int customerId)
+    public AddressRequest GetAddress(int customerId)
     {
         return _customerService.FindCustomerAddress(customerId);
     }

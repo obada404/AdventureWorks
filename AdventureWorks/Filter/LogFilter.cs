@@ -29,7 +29,6 @@ public class LogFilter : IActionFilter
         context.HttpContext.Request.Headers["id"] = userId?.Value;
         var role = principal?.FindFirst(ClaimTypes.Role)?.Value;
         context.HttpContext.Request.Headers["role"] = role;
-        _logger.LogInformation("Action start: {actionName}", context.ActionDescriptor.DisplayName);
     }
 
     public void OnActionExecuted(ActionExecutedContext context)

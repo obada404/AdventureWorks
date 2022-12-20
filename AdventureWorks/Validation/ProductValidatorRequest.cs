@@ -10,7 +10,7 @@ public class ProductValidatorRequest : AbstractValidator<productRequest>
     public ProductValidatorRequest()
     {
 
-        RuleFor(x => x.Weight).InclusiveBetween(1, 999);
+        RuleFor(x => x.Weight).InclusiveBetween(1, 99999);
         RuleFor(x => x.Size).MaximumLength(5);
         RuleFor(x => x.Name).MaximumLength(50);
         RuleFor(x => x.ProductNumber).MaximumLength(25);
@@ -29,7 +29,7 @@ public class ProductValidatorRequestUpdate : AbstractValidator<productRequestUpd
     public ProductValidatorRequestUpdate()
     {
         RuleFor(x => x.ProductId).NotNull().NotEmpty();
-        RuleFor(x => x.Weight).InclusiveBetween(1, 999);
+        RuleFor(x => x.Weight).InclusiveBetween(1, 99999);
         RuleFor(x => x.Size).MaximumLength(5);
         RuleFor(x => x.Name).MaximumLength(50);
         RuleFor(x => x.ProductNumber).MaximumLength(25);

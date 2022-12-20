@@ -47,5 +47,9 @@ public class MappingProfile: Profile
         CreateMap<Admin, AdminLogin>().ReverseMap(); // Reverse
         CreateMap<Admin, AdminRequest>(); // One Way
         CreateMap<Admin, AdminRequest>().ReverseMap(); // Reverse
+        
+        CreateMap<Address, AddressRequest>(); // One Way
+        CreateMap<Address, AddressRequest>().ReverseMap(); // Reverse
+
     }
 }

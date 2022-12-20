@@ -37,10 +37,7 @@ public class EFCustomerRepository:ICustomerRepository
 
     }
 
-    public Customer Find(Customer Customer)
-    {
-        throw new NotImplementedException();
-    }
+   
 
     public int Delete(int CustomerId)
     {
@@ -89,11 +86,12 @@ public class EFCustomerRepository:ICustomerRepository
          
     }
 
-    public Address? FindAddress(int customerId)
+    public AddressRequest FindAddress(int customerId)
     {
-        //we can do join if cusstomer can have multiple addressees
         var address = _context.CustomerAddresses.FirstOrDefault(x => x.CustomerId == customerId);
-      return _context.Addresses.FirstOrDefault(x => x.AddressId == address.AddressId);
+      
+        var addressline= _context.Addresses.FirstOrDefault(x => x.AddressId == address.AddressId);
+        return _mapper.Map<Address, AddressRequest>(addressline);
     }
 }
 

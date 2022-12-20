@@ -11,7 +11,7 @@ public interface ICustomerService
     CustomerRequestUpdate LoginCustomer(CustomerLogin customerLogin);
     int UpdateCustomer(CustomerRequestUpdate customer);
     int DeleteCustomer(int customerId);
-    Address? FindCustomerAddress(int customerId);
+    AddressRequest FindCustomerAddress(int customerId);
 }
 
 public class CustomerService:ICustomerService
@@ -51,7 +51,7 @@ public class CustomerService:ICustomerService
         return _customerRepository.Delete(customerId);
     }
 
-    public Address? FindCustomerAddress(int customerId)
+    public AddressRequest FindCustomerAddress(int customerId)
     {
        return _customerRepository.FindAddress(customerId);
     }

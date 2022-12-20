@@ -10,7 +10,7 @@ public interface IProductRepository
     public productRequest Find(int productId);
     public int Delete(int  productId);
     public int Update(productRequestUpdate productRequest);
-    List<Product> GetAll();
+    List<Product> GetAll(int number);
     VGetAllCategory? GetCategory(int productId);
     VProductAndDescription? ProductDescription(int productId);
 }
