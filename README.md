@@ -5,10 +5,10 @@ small project using ASP.net to implement the application layer of a database sam
 using jwt for auth stuff 
 
 this project have 4 main controler 
-# Admin
-# Customer
-# Products
-# Order
+1- Admin
+2- Customer
+3- Products
+4- Order
 
 each controller has the routing to service that provide adding and changing data if you have permission to change it 
 
