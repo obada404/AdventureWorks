@@ -7,11 +7,11 @@ namespace AdventureWorks.Service;
 public interface ICustomerService
 {
     int AddCustomer(CustomerSignup customer);
-    CustomerRequest FindCustomer(int customerId);
-    CustomerRequestUpdate LoginCustomer(CustomerLogin customerLogin);
+    CustomerRequest? FindCustomer(int customerId);
+    CustomerRequestUpdate? LoginCustomer(CustomerLogin customerLogin);
     int UpdateCustomer(CustomerRequestUpdate customer);
     int DeleteCustomer(int customerId);
-    AddressRequest FindCustomerAddress(int customerId);
+    AddressRequest? FindCustomerAddress(int customerId);
 }
 
 public class CustomerService:ICustomerService
@@ -30,12 +30,12 @@ public class CustomerService:ICustomerService
         return result;
     }
 
-    public CustomerRequest FindCustomer(int customerId)
+    public CustomerRequest? FindCustomer(int customerId)
     {
         return _customerRepository.Find(customerId);
     }
 
-    public CustomerRequestUpdate LoginCustomer(CustomerLogin customerLogin)
+    public CustomerRequestUpdate? LoginCustomer(CustomerLogin customerLogin)
     {
         
         return _customerRepository.Login(customerLogin);
@@ -51,7 +51,7 @@ public class CustomerService:ICustomerService
         return _customerRepository.Delete(customerId);
     }
 
-    public AddressRequest FindCustomerAddress(int customerId)
+    public AddressRequest? FindCustomerAddress(int customerId)
     {
        return _customerRepository.FindAddress(customerId);
     }

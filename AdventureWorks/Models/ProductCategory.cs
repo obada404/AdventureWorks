@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace AdventureWorks.Models;
 
 /// <summary>
-/// High-level product categorization.
+/// High-level products categorization.
 /// </summary>
 public partial class ProductCategory
 {

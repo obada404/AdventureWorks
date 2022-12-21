@@ -19,7 +19,7 @@ public class Product : Controller
     }
     [HttpPost]
     [TypeFilter(typeof(LogFilter))]
-    [Route("/product")]
+    [Route("/products")]
     public ActionResult PostProduct( [FromBody] productRequest product)
     {
         ProductValidatorRequest validatorRequestUpdate = new ProductValidatorRequest();
@@ -35,24 +35,24 @@ public class Product : Controller
     }
 
     [HttpGet]
-    [Route("/product/{productId}")]
-    public productRequest FindProduct(int productId)
+    [Route("/products/{productId}")]
+    public productRequest? FindProduct(int productId)
     {
         return _productService.FindProduct(productId);
     }
 
     [HttpDelete]
     [TypeFilter(typeof(LogFilter))]
-    [Route("/product/{productId}")]
+    [Route("/products/{productId}")]
     public ActionResult DeleteProduct(int productId)
     {
-        return new JsonResult( _productService.DeleteProduct(productId) == 1?"product deleted " : " no product with this id" );
+        return new JsonResult( _productService.DeleteProduct(productId) == 1?"products deleted " : " no products with this id" );
     }
 
     
     [HttpPatch]
     [TypeFilter(typeof(LogFilter))]
-    [Route("/product")]
+    [Route("/products")]
     public ActionResult UpdateProduct( [FromBody] productRequestUpdate productRequest)
     {
         

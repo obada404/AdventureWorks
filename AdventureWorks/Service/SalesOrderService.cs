@@ -11,10 +11,11 @@ public interface ISalesOrderService
     SalesOrderRequest FindOrder(int orderId);
     int UpdateOrder(SalesOrderRequestUpdate order);
     int DeleteOrder(int orderId);
-    int Purchase(PurchaseRequestEnv<SalesOrderRequest, PurchaseRequest> request);
+    int Purchase(int orderHeaderId,PurchaseRequest request);
     List<SalesOrderHeader> AllOrders(int customerId);
     dynamic AllProductsCustomer(int customerId);
     int AddProductToOrder(int orderId, Orders orders);
+    List<SalesOrderDetail> DetailsForOrderHeaders(int orderHeaderId);
 }
 
 public class SalesOrderService : ISalesOrderService
@@ -49,16 +50,16 @@ public class SalesOrderService : ISalesOrderService
        return _salesOrderRepository.Delete(orderId);
     }
 
-    public int Purchase(PurchaseRequestEnv<SalesOrderRequest, PurchaseRequest> request)
+    public int Purchase( int orderHeaderId,PurchaseRequest request)
     {
         var listOfOrder = new List<SalesOrderDetail>();
-        foreach (var orderRequest in request.PurchaseRequest.product)
+        foreach (var orderRequest in request.products)
         {
             listOfOrder.Add(_mapper.Map<OrderDetailRequest,SalesOrderDetail>(orderRequest));
         }
 
        
-        return _salesOrderRepository.Purchase(_mapper.Map<SalesOrderRequest, SalesOrderHeader>(request.salesorder),
+        return _salesOrderRepository.Purchase(orderHeaderId,
             listOfOrder);
     }
 
@@ -80,5 +81,10 @@ public class SalesOrderService : ISalesOrderService
             listOfOrder.Add(_mapper.Map<OrderDetailRequestmin,SalesOrderDetail>(orderRequestMin));
         }
         return _salesOrderRepository.AddProductToOrder(orderId, listOfOrder);
+    }
+
+    public List<SalesOrderDetail> DetailsForOrderHeaders(int orderHeaderId)
+    {
+      return  _salesOrderRepository.GetOrderDetails(orderHeaderId);
     }
 }

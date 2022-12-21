@@ -14,7 +14,7 @@ public partial class ProductDescription
     public int ProductDescriptionId { get; set; }
 
     /// <summary>
-    /// Description of the product.
+    /// Description of the products.
     /// </summary>
     public string Description { get; set; } = null!;
 

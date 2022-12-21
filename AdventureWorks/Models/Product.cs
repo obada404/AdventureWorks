@@ -14,12 +14,12 @@ public partial class Product
     public int ProductId { get; set; }
 
     /// <summary>
-    /// Name of the product.
+    /// Name of the products.
     /// </summary>
     public string Name { get; set; } = null!;
 
     /// <summary>
-    /// Unique product identification number.
+    /// Unique products identification number.
     /// </summary>
     public string ProductNumber { get; set; } = null!;
 
@@ -29,7 +29,7 @@ public partial class Product
     public string? Color { get; set; }
 
     /// <summary>
-    /// Standard cost of the product.
+    /// Standard cost of the products.
     /// </summary>
     public decimal StandardCost { get; set; }
 
@@ -49,32 +49,32 @@ public partial class Product
     public decimal? Weight { get; set; }
 
     /// <summary>
-    /// Product is a member of this product category. Foreign key to ProductCategory.ProductCategoryID. 
+    /// Product is a member of this products category. Foreign key to ProductCategory.ProductCategoryID. 
     /// </summary>
     public int? ProductCategoryId { get; set; }
 
     /// <summary>
-    /// Product is a member of this product model. Foreign key to ProductModel.ProductModelID.
+    /// Product is a member of this products model. Foreign key to ProductModel.ProductModelID.
     /// </summary>
     public int? ProductModelId { get; set; }
 
     /// <summary>
-    /// Date the product was available for sale.
+    /// Date the products was available for sale.
     /// </summary>
     public DateTime SellStartDate { get; set; }
 
     /// <summary>
-    /// Date the product was no longer available for sale.
+    /// Date the products was no longer available for sale.
     /// </summary>
     public DateTime? SellEndDate { get; set; }
 
     /// <summary>
-    /// Date the product was discontinued.
+    /// Date the products was discontinued.
     /// </summary>
     public DateTime? DiscontinuedDate { get; set; }
 
     /// <summary>
-    /// Small image of the product.
+    /// Small image of the products.
     /// </summary>
     public byte[]? ThumbNailPhoto { get; set; }
 

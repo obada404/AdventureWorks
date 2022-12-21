@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AdventureWorks.Repository;
 
-public class EFCustomerRepository:ICustomerRepository
+public class EfCustomerRepository:ICustomerRepository
 {
     private readonly AdventureWorksLt2016Context _context;
     private readonly IMapper _mapper;
 
-    public EFCustomerRepository(IMapper mapper) {
+    public EfCustomerRepository(IMapper mapper) {
         _mapper = mapper;
     
         _context = new AdventureWorksLt2016Context() ;
@@ -28,40 +28,49 @@ public class EFCustomerRepository:ICustomerRepository
         return customer.CustomerId;
     }
 
-    public CustomerRequest Find(int CustomerId)
+    public CustomerRequest? Find(int customerId)
     {
-        var tmp = _context.Customers.Find(CustomerId);
-        var tmpMap =_mapper.Map<Customer, CustomerRequest>(tmp);
-        _context.ChangeTracker.Clear();
-        return tmpMap;
+        var customer = _context.Customers.Find(customerId);
+        if (customer != null)
+        {
+            var tmpMap =_mapper.Map<Customer, CustomerRequest>(customer);
+            _context.ChangeTracker.Clear();
+            return tmpMap;
+        }
 
+        return null;
     }
 
    
 
-    public int Delete(int CustomerId)
+    public int Delete(int customerId)
     {
         try
         {
-            var customer = _context.Customers.Find(CustomerId);
-            var ruslt = _context.Remove(customer);
-            _context.SaveChanges();
-            return 1;
+            var customer = _context.Customers.Find(customerId);
+            if (customer != null)
+            {
+                _context.Customers.Remove(customer);
+                _context.SaveChanges();
+                return 1;
+            }
+
+            return 0;
         }
         catch (Exception e)
         {
-            throw e;
+            return 0;
         }
     }
 
-    public int Update(CustomerRequestUpdate Customer)
+    public int Update(CustomerRequestUpdate requestUpdate)
     {
 
-        var customeer = _context.Customers.Find(Customer.CustomerId);
-        if (customeer != null)
+        var customer = _context.Customers.Find(requestUpdate.CustomerId);
+        if (customer != null)
         {
-           var ee= _context.Entry(customeer);
-             ee.CurrentValues.SetValues(Customer);
+           var ee= _context.Entry(customer);
+            ee.CurrentValues.SetValues(requestUpdate);
            _context.SaveChanges();
            return 1;
         }
@@ -70,28 +79,32 @@ public class EFCustomerRepository:ICustomerRepository
         
     }
 
-    public CustomerRequestUpdate Login(CustomerLogin customerLogin)
+    public CustomerRequestUpdate? Login(CustomerLogin customerLogin)
     {
         var result =_context.Customers.FirstOrDefault(x => x.CustomerId == customerLogin.CustomerId);
         var hasher = new PasswordHasher <Customer> ();
-     var Verify=   hasher.VerifyHashedPassword(result, result.PasswordHash, customerLogin.Password);
-     if (Verify == PasswordVerificationResult.Success)
-     {
-         return _mapper.Map<Customer, CustomerRequestUpdate>(result);
-     }else
-     {
-         throw new AuthenticationFailedException("password not match ");
-         return null;
-     }
-         
+        if (result != null)
+        {
+            var passwordVerificationResult=   hasher.VerifyHashedPassword(result, result.PasswordHash, customerLogin.Password);
+            if (passwordVerificationResult == PasswordVerificationResult.Success)
+            {
+                return _mapper.Map<Customer, CustomerRequestUpdate>(result);
+            }else
+            {
+                throw new AuthenticationFailedException("password not match ");
+            }
+        }
+
+        return null;
     }
 
-    public AddressRequest FindAddress(int customerId)
+    public AddressRequest? FindAddress(int customerId)
     {
         var address = _context.CustomerAddresses.FirstOrDefault(x => x.CustomerId == customerId);
       
-        var addressline= _context.Addresses.FirstOrDefault(x => x.AddressId == address.AddressId);
-        return _mapper.Map<Address, AddressRequest>(addressline);
+        var addressLine= _context.Addresses.FirstOrDefault(x => address != null && x.AddressId == address.AddressId);
+        if (addressLine != null) return _mapper.Map<Address, AddressRequest>(addressLine);
+        return null;
     }
 }
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace AdventureWorks.Models;
 
 /// <summary>
-/// Cross-reference table mapping product descriptions and the language the description is written in.
+/// Cross-reference table mapping products descriptions and the language the description is written in.
 /// </summary>
 public partial class ProductModelProductDescription
 {

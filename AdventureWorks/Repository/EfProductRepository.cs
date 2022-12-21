@@ -1,10 +1,7 @@
-
 using AdventureWorks.DTO;
 using AdventureWorks.Interface;
 using AdventureWorks.Models;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace AdventureWorks.Repository;
 
@@ -25,33 +22,33 @@ public class EfProductRepository:IProductRepository
         return product.ProductId;
     }
 
-    public productRequest Find(int productId)
+    public productRequest? Find(int productId)
     {
-         var tmp =_context.Products.Find(productId);
+        var product =_context.Products.Find(productId);
 
-         return _mapper.Map<Product, productRequest>(tmp);
+        if (product != null) return _mapper.Map<Product, productRequest>(product);
+        return null;
     }
-
-    public Product find(Product product)
-    {
-        throw new NotImplementedException();
-    }
-
+    
     public int Delete(int productId)
     {
         try
         {
             var product = _context.Products.Find(productId);
-            var ruslt = _context.Remove(product);
-            _context.SaveChanges();
-            return 1;
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+
+                _context.SaveChanges();
+                return 1;
+            }
         }
         catch (ArgumentNullException e)
         {
             return 0;
         }
-        
-    
+
+        return 0;
     }
 
 

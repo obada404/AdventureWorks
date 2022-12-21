@@ -5,7 +5,6 @@ using AdventureWorks.Service;
 using AdventureWorks.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyApp;
 
 namespace AdventureWorks.Controllers;
 
@@ -48,7 +47,7 @@ public class Admin : Controller
 
         if (admin != null)
         {
-            var jwt = _jwtManager.GenerateJwt(admin.AdminId+"", admin.AdminName, admin.Email,"Admin");
+            var jwt = _jwtManager.GenerateJwt(admin.AdminId+"", admin.AdminName!, admin.Email!,"Admin");
             return Ok(new Token(jwt));
         }
 

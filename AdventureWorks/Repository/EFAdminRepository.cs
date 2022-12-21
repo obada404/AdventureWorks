@@ -47,8 +47,13 @@ public class EfAdminRepository:IAdminRepository
         try
         {
             var admin = _context.Admins.Find(adminId);
-            _context.Remove(admin);
+            if (admin != null)
+            {
+                _context.Admins.Remove(admin);
+            
             _context.SaveChanges();
+            
+        }
             return 1;
         }
         catch (Exception e)
@@ -77,18 +82,17 @@ public class EfAdminRepository:IAdminRepository
         
     }
 
-    public AdminRequestUpdate Login(AdminLogin AdminLogin)
+    public AdminRequestUpdate Login(AdminLogin adminLogin)
     {
-        var result =_context.Admins.FirstOrDefault(x => x.AdminId == AdminLogin.AdminId);
+        var result =_context.Admins.FirstOrDefault(x => x.AdminId == adminLogin.AdminId);
         var hasher = new PasswordHasher <Admin> ();
-     var verify=   hasher.VerifyHashedPassword(result, result.HashedPassword, AdminLogin.HashedPassword);
+     var verify=   hasher.VerifyHashedPassword(result!, result!.HashedPassword, adminLogin.HashedPassword);
      if (verify == PasswordVerificationResult.Success)
      {
          return _mapper.Map<Admin, AdminRequestUpdate>(result);
      }else
      {
          throw new AuthenticationFailedException("password not match ");
-         return null;
      }
          
     }

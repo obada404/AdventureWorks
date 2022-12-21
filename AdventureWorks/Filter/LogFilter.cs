@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.JsonWebTokens;
-using MyApp;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdventureWorks.Filter;

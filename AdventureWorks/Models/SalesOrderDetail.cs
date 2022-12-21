@@ -14,12 +14,12 @@ public partial class SalesOrderDetail
     public int SalesOrderId { get; set; }
 
     /// <summary>
-    /// Primary key. One incremental unique number per product sold.
+    /// Primary key. One incremental unique number per products sold.
     /// </summary>
     public int SalesOrderDetailId { get; set; }
 
     /// <summary>
-    /// Quantity ordered per product.
+    /// Quantity ordered per products.
     /// </summary>
     public short OrderQty { get; set; }
 
@@ -29,7 +29,7 @@ public partial class SalesOrderDetail
     public int ProductId { get; set; }
 
     /// <summary>
-    /// Selling price of a single product.
+    /// Selling price of a single products.
     /// </summary>
     public decimal UnitPrice { get; set; }
 
@@ -39,7 +39,7 @@ public partial class SalesOrderDetail
     public decimal UnitPriceDiscount { get; set; }
 
     /// <summary>
-    /// Per product subtotal. Computed as UnitPrice * (1 - UnitPriceDiscount) * OrderQty.
+    /// Per products subtotal. Computed as UnitPrice * (1 - UnitPriceDiscount) * OrderQty.
     /// </summary>
     public decimal LineTotal { get; set; }
 

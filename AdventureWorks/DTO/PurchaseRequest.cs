@@ -3,7 +3,7 @@ namespace AdventureWorks.DTO;
 
 public class PurchaseRequest
 {
-    public List<OrderDetailRequest> product { get; set; }
+    public List<OrderDetailRequest> products { get; set; }
 }
 
 public class Orders

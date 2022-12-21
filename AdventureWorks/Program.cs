@@ -17,7 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
 builder.Services.AddScoped<IProductRepository,EfProductRepository >();
 builder.Services.AddScoped<IProductService,ProductService >();
-builder.Services.AddScoped<ICustomerRepository,EFCustomerRepository >();
+builder.Services.AddScoped<ICustomerRepository,EfCustomerRepository >();
 builder.Services.AddScoped<ICustomerService,CustomerService >();
 builder.Services.AddScoped<ISalesOrderRepository,SalesOrderRepository >();
 builder.Services.AddScoped<ISalesOrderService,SalesOrderService >();

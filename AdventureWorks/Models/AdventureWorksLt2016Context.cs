@@ -98,7 +98,9 @@ public partial class AdventureWorksLt2016Context : DbContext
         {
             entity.ToTable("Admin");
 
-            entity.Property(e => e.AdminId).HasColumnName("adminId");
+            entity.Property(e => e.AdminId)
+                .ValueGeneratedNever()
+                .HasColumnName("adminId");
             entity.Property(e => e.AdminName)
                 .HasMaxLength(10)
                 .IsFixedLength()
@@ -106,7 +108,9 @@ public partial class AdventureWorksLt2016Context : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .HasColumnName("email");
-            entity.Property(e => e.HashedPassword).HasColumnName("hashedPassword");
+            entity.Property(e => e.HashedPassword)
+                .HasMaxLength(50)
+                .HasColumnName("hashedPassword");
             entity.Property(e => e.Role)
                 .HasMaxLength(20)
                 .IsFixedLength()
@@ -172,7 +176,7 @@ public partial class AdventureWorksLt2016Context : DbContext
             entity.Property(e => e.PasswordHash)
                 .HasMaxLength(128)
                 .IsUnicode(false)
-                .HasComment("Password for the e-mail account.");
+                .HasComment("HashedPassword for the e-mail account.");
             entity.Property(e => e.PasswordSalt)
                 .HasMaxLength(10)
                 .IsUnicode(false)
@@ -277,7 +281,7 @@ public partial class AdventureWorksLt2016Context : DbContext
                 .HasMaxLength(15)
                 .HasComment("Product color.");
             entity.Property(e => e.DiscontinuedDate)
-                .HasComment("Date the product was discontinued.")
+                .HasComment("Date the products was discontinued.")
                 .HasColumnType("datetime");
             entity.Property(e => e.ListPrice)
                 .HasComment("Selling price.")
@@ -288,33 +292,33 @@ public partial class AdventureWorksLt2016Context : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
-                .HasComment("Name of the product.");
+                .HasComment("Name of the products.");
             entity.Property(e => e.ProductCategoryId)
-                .HasComment("Product is a member of this product category. Foreign key to ProductCategory.ProductCategoryID. ")
+                .HasComment("Product is a member of this products category. Foreign key to ProductCategory.ProductCategoryID. ")
                 .HasColumnName("ProductCategoryID");
             entity.Property(e => e.ProductModelId)
-                .HasComment("Product is a member of this product model. Foreign key to ProductModel.ProductModelID.")
+                .HasComment("Product is a member of this products model. Foreign key to ProductModel.ProductModelID.")
                 .HasColumnName("ProductModelID");
             entity.Property(e => e.ProductNumber)
                 .HasMaxLength(25)
-                .HasComment("Unique product identification number.");
+                .HasComment("Unique products identification number.");
             entity.Property(e => e.Rowguid)
                 .HasDefaultValueSql("(newid())")
                 .HasComment("ROWGUIDCOL number uniquely identifying the record. Used to support a merge replication sample.")
                 .HasColumnName("rowguid");
             entity.Property(e => e.SellEndDate)
-                .HasComment("Date the product was no longer available for sale.")
+                .HasComment("Date the products was no longer available for sale.")
                 .HasColumnType("datetime");
             entity.Property(e => e.SellStartDate)
-                .HasComment("Date the product was available for sale.")
+                .HasComment("Date the products was available for sale.")
                 .HasColumnType("datetime");
             entity.Property(e => e.Size)
                 .HasMaxLength(5)
                 .HasComment("Product size.");
             entity.Property(e => e.StandardCost)
-                .HasComment("Standard cost of the product.")
+                .HasComment("Standard cost of the products.")
                 .HasColumnType("money");
-            entity.Property(e => e.ThumbNailPhoto).HasComment("Small image of the product.");
+            entity.Property(e => e.ThumbNailPhoto).HasComment("Small image of the products.");
             entity.Property(e => e.ThumbnailPhotoFileName)
                 .HasMaxLength(50)
                 .HasComment("Small image file name.");
@@ -331,7 +335,7 @@ public partial class AdventureWorksLt2016Context : DbContext
         {
             entity.HasKey(e => e.ProductCategoryId).HasName("PK_ProductCategory_ProductCategoryID");
 
-            entity.ToTable("ProductCategory", "SalesLT", tb => tb.HasComment("High-level product categorization."));
+            entity.ToTable("ProductCategory", "SalesLT", tb => tb.HasComment("High-level products categorization."));
 
             entity.HasIndex(e => e.Name, "AK_ProductCategory_Name").IsUnique();
 
@@ -373,7 +377,7 @@ public partial class AdventureWorksLt2016Context : DbContext
                 .HasColumnName("ProductDescriptionID");
             entity.Property(e => e.Description)
                 .HasMaxLength(400)
-                .HasComment("Description of the product.");
+                .HasComment("Description of the products.");
             entity.Property(e => e.ModifiedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasComment("Date and time the record was last updated.")
@@ -411,7 +415,7 @@ public partial class AdventureWorksLt2016Context : DbContext
         {
             entity.HasKey(e => new { e.ProductModelId, e.ProductDescriptionId, e.Culture }).HasName("PK_ProductModelProductDescription_ProductModelID_ProductDescriptionID_Culture");
 
-            entity.ToTable("ProductModelProductDescription", "SalesLT", tb => tb.HasComment("Cross-reference table mapping product descriptions and the language the description is written in."));
+            entity.ToTable("ProductModelProductDescription", "SalesLT", tb => tb.HasComment("Cross-reference table mapping products descriptions and the language the description is written in."));
 
             entity.HasIndex(e => e.Rowguid, "AK_ProductModelProductDescription_rowguid").IsUnique();
 
@@ -461,17 +465,17 @@ public partial class AdventureWorksLt2016Context : DbContext
                 .HasColumnName("SalesOrderID");
             entity.Property(e => e.SalesOrderDetailId)
                 .ValueGeneratedOnAdd()
-                .HasComment("Primary key. One incremental unique number per product sold.")
+                .HasComment("Primary key. One incremental unique number per products sold.")
                 .HasColumnName("SalesOrderDetailID");
             entity.Property(e => e.LineTotal)
                 .HasComputedColumnSql("(isnull(([UnitPrice]*((1.0)-[UnitPriceDiscount]))*[OrderQty],(0.0)))", false)
-                .HasComment("Per product subtotal. Computed as UnitPrice * (1 - UnitPriceDiscount) * OrderQty.")
+                .HasComment("Per products subtotal. Computed as UnitPrice * (1 - UnitPriceDiscount) * OrderQty.")
                 .HasColumnType("numeric(38, 6)");
             entity.Property(e => e.ModifiedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasComment("Date and time the record was last updated.")
                 .HasColumnType("datetime");
-            entity.Property(e => e.OrderQty).HasComment("Quantity ordered per product.");
+            entity.Property(e => e.OrderQty).HasComment("Quantity ordered per products.");
             entity.Property(e => e.ProductId)
                 .HasComment("Product sold to customer. Foreign key to Product.ProductID.")
                 .HasColumnName("ProductID");
@@ -480,7 +484,7 @@ public partial class AdventureWorksLt2016Context : DbContext
                 .HasComment("ROWGUIDCOL number uniquely identifying the record. Used to support a merge replication sample.")
                 .HasColumnName("rowguid");
             entity.Property(e => e.UnitPrice)
-                .HasComment("Selling price of a single product.")
+                .HasComment("Selling price of a single products.")
                 .HasColumnType("money");
             entity.Property(e => e.UnitPriceDiscount)
                 .HasComment("Discount amount.")

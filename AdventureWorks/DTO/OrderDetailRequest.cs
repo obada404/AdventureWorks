@@ -8,12 +8,12 @@ public class OrderDetailRequest
     public int SalesOrderId { get; set; }
 
     /// <summary>
-    /// Primary key. One incremental unique number per product sold.
+    /// Primary key. One incremental unique number per products sold.
     /// </summary>
     public int SalesOrderDetailId { get; set; }
 
     /// <summary>
-    /// Quantity ordered per product.
+    /// Quantity ordered per products.
     /// </summary>
     public short OrderQty { get; set; }
 
@@ -26,7 +26,7 @@ public class OrderDetailRequestmin
 {
     
     /// <summary>
-    /// Quantity ordered per product.
+    /// Quantity ordered per products.
     /// </summary>
     public short OrderQty { get; set; }
 

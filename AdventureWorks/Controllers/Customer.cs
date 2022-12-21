@@ -1,12 +1,10 @@
 ﻿using System.Net;
 using AdventureWorks.DTO;
 using AdventureWorks.Filter;
-using AdventureWorks.Models;
 using AdventureWorks.Service;
 using AdventureWorks.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyApp;
 
 namespace AdventureWorks.Controllers;
 
@@ -92,7 +90,7 @@ public class Customer : Controller
     }
     [TypeFilter(typeof(LogFilter))]
     [HttpGet("/customerAddress")]
-    public AddressRequest GetAddress(int customerId)
+    public AddressRequest? GetAddress(int customerId)
     {
         return _customerService.FindCustomerAddress(customerId);
     }

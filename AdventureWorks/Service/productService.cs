@@ -8,7 +8,7 @@ namespace AdventureWorks.Service;
 public interface IProductService
 {
     int AddProduct(productRequest product);
-    productRequest FindProduct(int productId);
+    productRequest? FindProduct(int productId);
     int UpdateProduct(productRequestUpdate product);
     int DeleteProduct(int productId);
     List<Product> GetAll(int number);
@@ -35,7 +35,7 @@ public class ProductService :IProductService
 
     }
     
-    public productRequest FindProduct(int productId)
+    public productRequest? FindProduct(int productId)
     {
         return _productRepository.Find(productId);
     }

@@ -1,10 +1,9 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MyApp
+namespace AdventureWorks
 {
     public class JwtManager
     {
@@ -26,41 +25,51 @@ namespace MyApp
                 new Claim(ClaimTypes.Role, role)
             };
 
-            var token = new JwtSecurityToken(
-                issuer: "MyApp",
-                audience: "MyUsers",
-                claims: claims,
-                expires: DateTime.UtcNow.AddDays(7),
-                signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(_secretKey)),
-                    SecurityAlgorithms.HmacSha256));
+            if (_secretKey != null)
+            {
+                var token = new JwtSecurityToken(
+                    issuer: "MyApp",
+                    audience: "MyUsers",
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddDays(7),
+                    signingCredentials: new SigningCredentials(
+                        new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(_secretKey)),
+                        SecurityAlgorithms.HmacSha256));
             
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+
+            return "";
         }
 
         // Verify the JWT when the user attempts to access a protected action
-        public ClaimsPrincipal VerifyJwt(string token)
+        public ClaimsPrincipal? VerifyJwt(string token)
         {
-            var validationParameters = new TokenValidationParameters
+            if (_secretKey != null)
             {
-                IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(_secretKey)),
-                ValidAudience = "MyUsers",
-                ValidIssuer = "MyApp"
-            };
+                var validationParameters = new TokenValidationParameters
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(_secretKey)),
+                    ValidAudience = "MyUsers",
+                    ValidIssuer = "MyApp"
+                };
 
-            try
-            {
-                var principal = new JwtSecurityTokenHandler().ValidateToken(
-                    token, validationParameters, out var validatedToken);
+                try
+                {
+                    var principal = new JwtSecurityTokenHandler().ValidateToken(
+                        token, validationParameters, out var validatedToken);
 
-                return principal;
+                    return principal;
+                }
+                catch (SecurityTokenValidationException)
+                {
+                    return null;
+                }
             }
-            catch (SecurityTokenValidationException)
-            {
-                return null;
-            }
+
+            return null;
         }
     }
 }
